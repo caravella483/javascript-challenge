@@ -1,55 +1,34 @@
 // from data.js
 var tableData = data;
 
-//
-var tableData = data;
+// YOUR CODE HERE!
 var tbody = d3.select("tbody");
 
+tableData.forEach(addRow)
 
+function addRow(item){
+    var row = tbody.append('tr');
 
-function handleSubmit() {
-    // Prevent the page from refreshing
-    d3.event.preventDefault();
-  
-    // Select the new input values from the form
-    var inputValue = d3.select("#datetime").property("value");
-  
-    // clear the table to prepare for new data filter
-    tbody.html("")
+    var sightings = Object.values(item);
 
-    // if there is a value being searched:
-    if (inputValue){
-    // filter the data based on the search
-        var filteredData = tableData.filter(data => data.datetime === inputValue)
+    sightings.forEach(data => {
+        row.append('td').text(data);
+    })
+}
 
-    // append html table with each listing
-        filteredData.forEach((ufoSighting) => {
-            var row = tbody.append("tr");
-            Object.entries(ufoSighting).forEach(([key, value]) => {
-            var cell = row.append("td");
-            cell.text(value);
-            });
-        });
-    }
+// Select the filter button
+var button = d3.select("#filter-btn");
 
-    // if there isn't a value being searched, list all known values:
-    else {
-        var filteredData = tableData.filter(data => data.datetime)
-        filteredData.forEach((ufoSighting) => {
-            var row = tbody.append("tr");
-            Object.entries(ufoSighting).forEach(([key, value]) => {
-            var cell = row.append("td");
-            cell.text(value);
-            });
-        });
-    };
+button.on("click", function() {
+    tbody.html("");
 
-  // clear search input
-  d3.select(".form-control").node().value = "";
-};
+    // Select the input element and get the raw HTML node
+    var inputElement = d3.select("#datetime");
     
-
-
-d3.select("#filter-btn").on("click", handleSubmit);
-d3.select("form").on("submit", handleSubmit);
-
+    // Get the value property of the input element
+    var inputValue = inputElement.property("value");
+    console.log(inputValue)
+    var filteredData = tableData.filter(sighting => sighting.datetime === inputValue);
+    console.log(filteredData);
+    filteredData.forEach(addRow)
+});
